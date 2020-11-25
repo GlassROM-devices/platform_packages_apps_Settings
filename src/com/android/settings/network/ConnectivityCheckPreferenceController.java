@@ -80,9 +80,17 @@ public class ConnectivityCheckPreferenceController extends BasePreferenceControl
     }
 
     private void updatePreferenceState() {
-        mConnectivityPreference.setValueIndex(connectivityCheckURLStringToValueIndex(
-                Settings.Global.getString(mContext.getContentResolver(),
-                Settings.Global.CAPTIVE_PORTAL_HTTP_URL)));
+        switch(Settings.Global.getString(mContext.getContentResolver(),
+                Settings.Global.CAPTIVE_PORTAL_HTTP_URL)) {
+            case GRAPHENEOS_CAPTIVE_PORTAL_HTTP_URL:
+                mConnectivityPreference.setValueIndex(0);
+		break;
+            case STANDARD_CAPTIVE_PORTAL_HTTP_URL:
+                mConnectivityPreference.setValueIndex(1);
+		break;
+            default:
+                mConnectivityPreference.setValueIndex(0);
+         }
     }
 
     @Override
@@ -120,13 +128,6 @@ public class ConnectivityCheckPreferenceController extends BasePreferenceControl
     }
 
     private int connectivityCheckURLStringToValueIndex(String option) {
-        switch(option) {
-            case GRAPHENEOS_CAPTIVE_PORTAL_HTTP_URL:
-                return GRAPHENEOS_CAPTIVE_PORTAL_HTTP_URL_INTVAL;
-            case STANDARD_CAPTIVE_PORTAL_HTTP_URL:
-                return STANDARD_CAPTIVE_PORTAL_HTTP_URL_INTVAL;
-            default:
-                return STANDARD_CAPTIVE_PORTAL_HTTP_URL_INTVAL;
         }
     }
 }
