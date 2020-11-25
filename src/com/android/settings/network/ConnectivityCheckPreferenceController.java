@@ -17,6 +17,7 @@
 package com.android.settings.network;
 
 import static android.provider.Settings.Global.CAPTIVE_PORTAL_HTTP_URL;
+import static android.provider.Settings.Global.CAPTIVE_PORTAL_HTTPS_URL;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -83,51 +84,41 @@ public class ConnectivityCheckPreferenceController extends BasePreferenceControl
         switch(Settings.Global.getString(mContext.getContentResolver(),
                 Settings.Global.CAPTIVE_PORTAL_HTTP_URL)) {
             case GRAPHENEOS_CAPTIVE_PORTAL_HTTP_URL:
-                mConnectivityPreference.setValueIndex(0);
+                mConnectivityPreference.setValueIndex(GRAPHENEOS_CAPTIVE_PORTAL_HTTP_URL_INTVAL);
 		break;
             case STANDARD_CAPTIVE_PORTAL_HTTP_URL:
-                mConnectivityPreference.setValueIndex(1);
+                mConnectivityPreference.setValueIndex(STANDARD_CAPTIVE_PORTAL_HTTP_URL_INTVAL);
 		break;
             default:
-                mConnectivityPreference.setValueIndex(0);
+                mConnectivityPreference.setValueIndex(GRAPHENEOS_CAPTIVE_PORTAL_HTTP_URL_INTVAL);
          }
     }
 
     @Override
     public void onResume() {
         updatePreferenceState();
-        if (mConnectivityPreference != null) {
-            int mode = Integer.parseInt(mConnectivityPreference.getValue());
-            Settings.Global.putString(mContext.getContentResolver(), Settings.Global.CAPTIVE_PORTAL_HTTP_URL,
-                    connectivityCheckOptionValToURLString(mode));
+        if (mConnectivityPreference != null)
+	    setCaptivePortalURLs(mContext.getContentResolver, Integer.parseInt(mConnectivityPreference.getValue()));
+    }
+
+    private void setCaptivePortalURLs(ContentResolver cr, int mode) {
+        switch(option) {
+            case GRAPHENEOS_CAPTIVE_PORTAL_HTTP_URL_INTVAL:
+            Settings.Global.putString(cr, Settings.Global.CAPTIVE_PORTAL_HTTP_URL,
+                    GRAPHENEOS_CAPTIVE_PORTAL_HTTP_URL);
+            case STANDARD_CAPTIVE_PORTAL_HTTP_URL_INTVAL:
+            Settings.Global.putString(cr, Settings.Global.CAPTIVE_PORTAL_HTTP_URL,
+                    STANDARD_CAPTIVE_PORTAL_HTTP_URL);
+            default:
         }
     }
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object value) {
         final String key = preference.getKey();
-        if (KEY_CONNECTIVITY_CHECK_SETTINGS.equals(key)) {
-            int mode = Integer.parseInt((String) value);
-            Settings.Global.putString(mContext.getContentResolver(), Settings.Global.CAPTIVE_PORTAL_HTTP_URL,
-                    connectivityCheckOptionValToURLString(mode));
+        if (KEY_CONNECTIVITY_CHECK_SETTINGS.equals(key))
             return true;
-        } else {
+        else
             return false;
-        }
-    }
-
-    private String connectivityCheckOptionValToURLString(int option) {
-        switch(option) {
-            case GRAPHENEOS_CAPTIVE_PORTAL_HTTP_URL_INTVAL:
-                return GRAPHENEOS_CAPTIVE_PORTAL_HTTP_URL;
-            case STANDARD_CAPTIVE_PORTAL_HTTP_URL_INTVAL:
-                return STANDARD_CAPTIVE_PORTAL_HTTP_URL;
-            default:
-                return STANDARD_CAPTIVE_PORTAL_HTTP_URL;
-        }
-    }
-
-    private int connectivityCheckURLStringToValueIndex(String option) {
-        }
     }
 }
