@@ -16,9 +16,6 @@
 
 package com.android.settings.network;
 
-import static android.provider.Settings.Global.CAPTIVE_PORTAL_HTTP_URL;
-import static android.provider.Settings.Global.CAPTIVE_PORTAL_HTTPS_URL;
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
@@ -49,11 +46,24 @@ public class ConnectivityCheckPreferenceController extends BasePreferenceControl
 
     private static final String GRAPHENEOS_CAPTIVE_PORTAL_HTTP_URL =
             "http://connectivitycheck.grapheneos.org/generate_204";
-    private static final String STANDARD_CAPTIVE_PORTAL_HTTP_URL = 
-            "http://connectivitycheck.gstatic.com/generate_204";
+    private static final String GRAPHENEOS_CAPTIVE_PORTAL_HTTPS_URL =
+            "http://connectivitycheck.grapheneos.org/generate_204";
+    // TODO: maybe in the future we will have proper fallbacks for graphene
+    private static final String GRAPHENEOS_CAPTIVE_PORTAL_FALLBACK_URL =
+            GRAPHENEOS_CAPTIVE_PORTAL_HTTPS_URL;
+    private static final String GRAPHENEOS_CAPTIVE_PORTAL_OTHER_FALLBACK_URL =
+            GRAPHENEOS_CAPTIVE_PORTAL_HTTPS_URL;
 
     private static final int GRAPHENEOS_CAPTIVE_PORTAL_HTTP_URL_INTVAL = 0;
     private static final int STANDARD_CAPTIVE_PORTAL_HTTP_URL_INTVAL = 1;
+
+    // imported defaults from networkstack
+    private static final String DEFAULT_HTTPS_URL = "https://www.google.com/generate_204";
+    private static final String DEFAULT_HTTP_URL =
+            "http://connectivitycheck.gstatic.com/generate_204";
+    private static final String DEFAULT_FALLBACK_URL  = "http://www.google.com/gen_204";
+    private static final String DEFAULT_OTHER_FALLBACK_URLS =
+            "http://play.googleapis.com/generate_204";
 
     private static final String KEY_CONNECTIVITY_CHECK_SETTINGS = "connectivity_check_settings";
 
@@ -86,7 +96,7 @@ public class ConnectivityCheckPreferenceController extends BasePreferenceControl
             case GRAPHENEOS_CAPTIVE_PORTAL_HTTP_URL:
                 mConnectivityPreference.setValueIndex(GRAPHENEOS_CAPTIVE_PORTAL_HTTP_URL_INTVAL);
 		break;
-            case STANDARD_CAPTIVE_PORTAL_HTTP_URL:
+            case DEFAULT_HTTP_URL:
                 mConnectivityPreference.setValueIndex(STANDARD_CAPTIVE_PORTAL_HTTP_URL_INTVAL);
 		break;
             default:
@@ -102,14 +112,28 @@ public class ConnectivityCheckPreferenceController extends BasePreferenceControl
     }
 
     private void setCaptivePortalURLs(ContentResolver cr, int mode) {
-        switch(option) {
-            case GRAPHENEOS_CAPTIVE_PORTAL_HTTP_URL_INTVAL:
-            Settings.Global.putString(cr, Settings.Global.CAPTIVE_PORTAL_HTTP_URL,
-                    GRAPHENEOS_CAPTIVE_PORTAL_HTTP_URL);
+        switch(mode) {
             case STANDARD_CAPTIVE_PORTAL_HTTP_URL_INTVAL:
             Settings.Global.putString(cr, Settings.Global.CAPTIVE_PORTAL_HTTP_URL,
-                    STANDARD_CAPTIVE_PORTAL_HTTP_URL);
-            default:
+                    DEFAULT_HTTP_URL);
+            Settings.Global.putString(cr, Settings.Global.CAPTIVE_PORTAL_HTTPS_URL,
+                    DEFAULT_HTTPS_URL);
+            Settings.Global.putString(cr, Settings.Global.CAPTIVE_PORTAL_FALLBACK_URL,
+                    DEFAULT_FALLBACK_URL);
+            Settings.Global.putString(cr, Settings.Global.CAPTIVE_PORTAL_OTHER_FALLBACK_URLS,
+                    DEFAULT_OTHER_FALLBACK_URLS);
+	    break;
+	    // intentional fallthrough
+            case GRAPHENEOS_CAPTIVE_PORTAL_HTTP_URL_INTVAL:
+	    default:
+            Settings.Global.putString(cr, Settings.Global.CAPTIVE_PORTAL_HTTP_URL,
+                    GRAPHENEOS_CAPTIVE_PORTAL_HTTP_URL);
+            Settings.Global.putString(cr, Settings.Global.CAPTIVE_PORTAL_HTTPS_URL,
+                    GRAPHENEOS_CAPTIVE_PORTAL_HTTPS_URL);
+            Settings.Global.putString(cr, Settings.Global.CAPTIVE_PORTAL_FALLBACK_URL,
+                    GRAPHENEOS_CAPTIVE_PORTAL_FALLBACK_URL);
+            Settings.Global.putString(cr, Settings.Global.CAPTIVE_PORTAL_OTHER_FALLBACK_URLS,
+                    GRAPHENEOS_CAPTIVE_PORTAL_OTHER_FALLBACK_URL);
         }
     }
 
