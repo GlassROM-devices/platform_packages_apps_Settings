@@ -94,21 +94,25 @@ public class ConnectivityCheckPreferenceController
   }
 
   private void updatePreferenceState() {
-    switch (
-        Settings.Global.getString(mContext.getContentResolver(),
-                                  Settings.Global.CAPTIVE_PORTAL_HTTP_URL)) {
-    case GRAPHENEOS_CAPTIVE_PORTAL_HTTP_URL:
+    String pref = Settings.Global.getString(
+        mContext.getContentResolver(), Settings.Global.CAPTIVE_PORTAL_HTTP_URL);
+    if (pref != null) {
+      switch (pref) {
+      case GRAPHENEOS_CAPTIVE_PORTAL_HTTP_URL:
+        mConnectivityPreference.setValueIndex(
+            GRAPHENEOS_CAPTIVE_PORTAL_HTTP_URL_INTVAL);
+        break;
+      case DEFAULT_HTTP_URL:
+        mConnectivityPreference.setValueIndex(
+            STANDARD_CAPTIVE_PORTAL_HTTP_URL_INTVAL);
+        break;
+      default:
+        mConnectivityPreference.setValueIndex(
+            GRAPHENEOS_CAPTIVE_PORTAL_HTTP_URL_INTVAL);
+      }
+    } else
       mConnectivityPreference.setValueIndex(
           GRAPHENEOS_CAPTIVE_PORTAL_HTTP_URL_INTVAL);
-      break;
-    case DEFAULT_HTTP_URL:
-      mConnectivityPreference.setValueIndex(
-          STANDARD_CAPTIVE_PORTAL_HTTP_URL_INTVAL);
-      break;
-    default:
-      mConnectivityPreference.setValueIndex(
-          GRAPHENEOS_CAPTIVE_PORTAL_HTTP_URL_INTVAL);
-    }
   }
 
   @Override
@@ -116,7 +120,7 @@ public class ConnectivityCheckPreferenceController
     updatePreferenceState();
     if (mConnectivityPreference != null)
       setCaptivePortalURLs(
-          mContext.getContentResolver,
+          mContext.getContentResolver(),
           Integer.parseInt(mConnectivityPreference.getValue()));
   }
 
@@ -151,9 +155,12 @@ public class ConnectivityCheckPreferenceController
   @Override
   public boolean onPreferenceChange(Preference preference, Object value) {
     final String key = preference.getKey();
-    if (KEY_CONNECTIVITY_CHECK_SETTINGS.equals(key))
+    if (KEY_CONNECTIVITY_CHECK_SETTINGS.equals(key)) {
+      setCaptivePortalURLs(
+          mContext.getContentResolver(),
+          Integer.parseInt(mConnectivityPreference.getValue()));
       return true;
-    else
+    } else
       return false;
   }
 }
