@@ -59,7 +59,7 @@ public class BluetoothTimeoutReceiver extends BroadcastReceiver {
 							Settings.Global.BLUETOOTH_OFF_TIMEOUT));
 			}
 		}
-		else if(BLUETOOTH_ON_INTENT.equals(intent.getAction()) {
+		else if(BLUETOOTH_ON_INTENT.equals(intent.getAction())) {
 			if (!shouldDisableBluetooth() || mPendingIntent == null) {
 				// don't bother
 				return;
