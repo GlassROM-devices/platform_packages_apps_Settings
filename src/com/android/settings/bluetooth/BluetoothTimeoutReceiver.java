@@ -12,14 +12,14 @@ import java.util.Date;
 
 public class BluetoothTimeoutReceiver extends BroadcastReceiver {
 	private static final String TAG = "BluetoothTimeoutReceiver";
-	private static final bool DEBUG = false;
+	private static final boolean DEBUG = false;
 
 	// The intents
 	private static final String TIMEOUT_INTENT =
 		"android.bluetooth.intent.TIMEOUT";
-	private static final String BLUETOOTH_OFF_INTENT =
+	private static final String BLUETOOTH_DISCONNECTED_INTENT =
 		"android.bluetooth.device.action.ACL_DISCONNECTED";
-	private static final String BLUETOOTH_ON_INTENT =
+	private static final String BLUETOOTH_CONNECTED_INTENT =
 		"android.bluetooth.device.action.ACL_CONNECTED";
 
 	// a variable we use to store our intent
@@ -48,18 +48,22 @@ public class BluetoothTimeoutReceiver extends BroadcastReceiver {
 			if (DEBUG) Log.e(TAG, "Received an intent with a null action");
 			return;
 		}
+
 		if (TIMEOUT_INTENT.equals(intent.getAction())) {
 			if (shouldDisableBluetooth() && isBluetoothEnabledAndNotConnected(bluetoothAdapter)) {
 				bluetoothAdapter.disable();
 			}
-		} else if (BLUETOOTH_OFF_INTENT.equals(intent.getAction())) {
+                }
+
+		else if (BLUETOOTH_DISCONNECTED_INTENT.equals(intent.getAction())) {
 			if (shouldDisableBluetooth()) {
 				setTimeout(
 						Settings.Global.getLong(context.getContentResolver(),
 							Settings.Global.BLUETOOTH_OFF_TIMEOUT));
 			}
 		}
-		else if(BLUETOOTH_ON_INTENT.equals(intent.getAction())) {
+
+		else if(BLUETOOTH_CONNECTED_INTENT.equals(intent.getAction())) {
 			if (!shouldDisableBluetooth() || mPendingIntent == null) {
 				// don't bother
 				return;
@@ -71,13 +75,12 @@ public class BluetoothTimeoutReceiver extends BroadcastReceiver {
 		}
 	}
 
-	private static bool shouldDisableBluetooth() {
+	private static boolean shouldDisableBluetooth() {
 		return (Settings.Global.getLong(context.getContentResolver(),
 					Settings.Global.BLUETOOTH_OFF_TIMEOUT, 0)) > 0;
 	}
 
-	private static bool
-	isBluetoothEnabledAndNotConnected(BluetoothAdaper bluetoothAdapter) {
+	private static boolean isBluetoothEnabledAndNotConnected(BluetoothAdaper bluetoothAdapter) {
 		return isBluetoothEnabled(bluetoothAdapter) &&
 			!isBluetoothConnected(bluetoothAdapter) &&
 			!bluetoothAdapter.isDiscovering();
