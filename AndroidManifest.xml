@@ -2669,9 +2669,13 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.android.settingslib.bluetooth.BluetoothTimeoutReceiver">
+	<receiver android:name=".bluetooth.BluetoothTimeoutReceiver"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.bluetooth.intent.TIMEOUT" />
+                <action android:name="android.bluetooth.device.action.ACL_DISCONNECTED" />
+                <action android:name="android.bluetooth.device.action.ACL_CONNECTED" />
             </intent-filter>
         </receiver>
 
