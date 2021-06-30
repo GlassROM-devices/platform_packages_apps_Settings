@@ -18,9 +18,9 @@ public class BluetoothTimeoutReceiver extends BroadcastReceiver {
 	private static final String TIMEOUT_INTENT =
 		"android.bluetooth.intent.TIMEOUT";
 	private static final String BLUETOOTH_OFF_INTENT =
-		"android.bluetooth.intent.TIMEOUT";
+		"android.bluetooth.device.action.ACL_DISCONNECTED";
 	private static final String BLUETOOTH_ON_INTENT =
-		"android.bluetooth.intent.TIMEOUT";
+		"android.bluetooth.device.action.ACL_CONNECTED";
 
 	// a variable we use to store our intent
 	private static PendingIntent mPendingIntent;
