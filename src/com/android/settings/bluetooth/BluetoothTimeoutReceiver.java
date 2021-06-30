@@ -49,7 +49,7 @@ public class BluetoothTimeoutReceiver extends BroadcastReceiver {
 			return;
 		}
 		if (TIMEOUT_INTENT.equals(intent.getAction())) {
-			if (shouldDisableBluetooth() && isBluetoothEnabled()) {
+			if (shouldDisableBluetooth() && isBluetoothEnabledAndNotConnected(bluetoothAdapter)) {
 				bluetoothAdapter.disable();
 			}
 		} else if (BLUETOOTH_OFF_INTENT.equals(intent.getAction())) {
@@ -65,7 +65,7 @@ public class BluetoothTimeoutReceiver extends BroadcastReceiver {
 				return;
 			}
 
-			mAlarmManager.cancel(mPendingIntent);
+			context.getSystemService(Context.ALARM_SERVICE).cancel(mPendingIntent);
 			mPendingIntent.cancel();
 
 		}
