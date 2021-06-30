@@ -77,7 +77,7 @@ public class BluetoothTimeoutReceiver extends BroadcastReceiver {
 	}
 
 	private static bool
-	isBluetoothReallyEnabled(BluetoothAdaper bluetoothAdapter) {
+	isBluetoothEnabledAndNotConnected(BluetoothAdaper bluetoothAdapter) {
 		return isBluetoothEnabled(bluetoothAdapter) &&
 			!isBluetoothConnected(bluetoothAdapter) &&
 			!bluetoothAdapter.isDiscovering();
