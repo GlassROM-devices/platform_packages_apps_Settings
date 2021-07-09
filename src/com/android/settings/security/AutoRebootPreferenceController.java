@@ -14,10 +14,9 @@ import com.android.settings.core.PreferenceControllerMixin;
 import com.android.settingslib.core.AbstractPreferenceController;
 import com.android.settingslib.core.lifecycle.events.OnResume;
 
-import java.util.concurrent.TimeUnit;
-
 public class AutoRebootPreferenceController extends AbstractPreferenceController
-        implements PreferenceControllerMixin, OnResume, Preference.OnPreferenceChangeListener {
+    implements PreferenceControllerMixin, OnResume,
+           Preference.OnPreferenceChangeListener {
 
     private static final String KEY_AUTO_REBOOT = "auto_reboot";
     private static final String PREF_KEY_SECURITY_CATEGORY = "security_category";
@@ -57,10 +56,13 @@ public class AutoRebootPreferenceController extends AbstractPreferenceController
         }
 
         if (mIsAdmin) {
-            ListPreference autoReboot = (ListPreference) mSecurityCategory.findPreference(KEY_AUTO_REBOOT);
-            autoReboot.setValue(Integer.toString(Settings.Global.getInt(mContext.getContentResolver(), GLOBAL_SETTINGS_KEY, 0)));
+            ListPreference autoReboot =
+                (ListPreference) mSecurityCategory.findPreference(KEY_AUTO_REBOOT);
+            autoReboot.setValue(Integer.toString(Settings.Global.getInt(
+                            mContext.getContentResolver(), GLOBAL_SETTINGS_KEY, 0)));
         } else {
-            mSecurityCategory.removePreference(mSecurityCategory.findPreference(KEY_AUTO_REBOOT));
+            mSecurityCategory.removePreference(
+                    mSecurityCategory.findPreference(KEY_AUTO_REBOOT));
         }
     }
 
